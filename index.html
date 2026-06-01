@@ -12,13 +12,72 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: linear-gradient(135deg, #1a5c7a, #2d5a2d);
+      background: #000;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       z-index: 1000;
       gap: 20px;
+      overflow: hidden;
+    }
+
+    /* 8-bit forest background pattern */
+    #splash-screen::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        /* Sky */
+        linear-gradient(180deg, #333 0%, #1a1a1a 40%),
+        /* Trees pattern - left side */
+        repeating-linear-gradient(90deg, 
+          transparent 0px, 
+          transparent 40px, 
+          #222 40px, 
+          #222 50px,
+          transparent 50px,
+          transparent 90px),
+        /* Trees pattern - right side */
+        repeating-linear-gradient(90deg,
+          transparent 0px,
+          transparent 50px,
+          #222 50px,
+          #222 60px,
+          transparent 60px,
+          transparent 100px);
+      background-position: 0 0, 0 30%, 0 35%;
+      background-size: 100% 100%, 100% 200px, 100% 200px;
+      background-repeat: repeat-y;
+      opacity: 0.8;
+      z-index: -1;
+    }
+
+    /* Pixelated forest elements */
+    #splash-screen::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 40%;
+      background-image: 
+        /* Ground grass pattern */
+        repeating-linear-gradient(90deg,
+          #1a1a1a 0px,
+          #1a1a1a 10px,
+          #222 10px,
+          #222 20px),
+        /* Bush shapes */
+        radial-gradient(30px 20px at 20% 60%, #222, transparent),
+        radial-gradient(25px 18px at 80% 65%, #222, transparent),
+        radial-gradient(20px 15px at 50% 70%, #222, transparent);
+      background-position: 0 0, 0 0, 0 0, 0 0;
+      background-size: auto, auto, auto, auto;
+      z-index: 0;
     }
 
     #splash-screen.hidden {
@@ -27,80 +86,137 @@
 
     .splash-content {
       text-align: center;
-      color: #e6f0f8;
+      color: #ffffff;
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
     }
 
     .splash-content h1 {
       font-size: 48px;
-      margin: 0 0 10px 0;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+      margin: 0;
+      text-shadow: 3px 3px 0 #000, 6px 6px 0 #444;
       font-family: system-ui, -apple-system, 'Segoe UI', Roboto;
+      font-weight: bold;
+      letter-spacing: 2px;
+      color: #fff;
     }
 
     .splash-content p {
-      font-size: 18px;
-      margin: 0 0 30px 0;
+      font-size: 16px;
+      margin: 0;
       opacity: 0.9;
+      letter-spacing: 1px;
+      color: #ccc;
+    }
+
+    /* Loading container - centered */
+    .loading-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      width: 100%;
+      max-width: 300px;
+      padding: 20px;
     }
 
     .loading-bar {
-      width: 200px;
-      height: 10px;
-      background: rgba(255,255,255,0.2);
-      border-radius: 5px;
+      width: 100%;
+      height: 20px;
+      background: #1a1a1a;
+      border: 3px solid #fff;
       overflow: hidden;
-      border: 2px solid #e6f0f8;
+      box-shadow: inset 0 0 0 1px #444, 0 0 10px rgba(0,0,0,0.5);
     }
 
     .loading-progress {
       height: 100%;
-      background: linear-gradient(90deg, #FFD700, #FF6600);
+      background: linear-gradient(90deg, #fff, #ccc);
       width: 0%;
       transition: width 0.3s ease;
+      box-shadow: inset -2px 0 0 rgba(0,0,0,0.3);
     }
 
     .loading-text {
-      font-size: 14px;
-      opacity: 0.8;
-      margin-top: 10px;
+      font-size: 12px;
+      opacity: 0.7;
+      letter-spacing: 1px;
+      color: #ccc;
+      text-transform: uppercase;
     }
 
     #start-button {
-      background: linear-gradient(135deg, #2b6fdd, #1e52b3);
-      color: #fff;
-      border: none;
+      background: linear-gradient(135deg, #fff, #ddd);
+      color: #000;
+      border: 3px solid #000;
       padding: 15px 40px;
       font-size: 18px;
-      border-radius: 8px;
+      border-radius: 0;
       cursor: pointer;
       font-weight: bold;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-      transition: all 0.3s ease;
+      box-shadow: 3px 3px 0 #000;
+      transition: all 0.1s ease;
       margin-top: 20px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto;
     }
 
-    #start-button:hover {
+    #start-button:hover:not(.loading) {
       transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+      box-shadow: 5px 5px 0 #000;
     }
 
-    #start-button:active {
+    #start-button:active:not(.loading) {
       transform: translateY(0);
+      box-shadow: 2px 2px 0 #000;
     }
 
     #start-button.loading {
-      opacity: 0.7;
+      opacity: 0.6;
       cursor: not-allowed;
+      background: linear-gradient(135deg, #ccc, #999);
     }
 
     .pokeball-icon {
-      font-size: 60px;
+      font-size: 80px;
       animation: bounce 2s infinite;
+      text-shadow: 3px 3px 0 #000;
     }
 
     @keyframes bounce {
       0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-20px); }
+      50% { transform: translateY(-30px); }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 640px) {
+      .splash-content h1 {
+        font-size: 32px;
+        text-shadow: 2px 2px 0 #000, 4px 4px 0 #444;
+      }
+
+      .splash-content p {
+        font-size: 14px;
+      }
+
+      .loading-bar {
+        height: 16px;
+        border: 2px solid #fff;
+      }
+
+      #start-button {
+        padding: 12px 30px;
+        font-size: 16px;
+      }
+
+      .pokeball-icon {
+        font-size: 60px;
+      }
     }
   </style>
 </head>
@@ -108,13 +224,16 @@
   <div id="splash-screen">
     <div class="splash-content">
       <div class="pokeball-icon">🔴⚪</div>
-      <h1>Let's Catch a Pokemon</h1>
-      <p>Loading game assets...</p>
-      <div class="loading-bar">
-        <div class="loading-progress" id="progress"></div>
+      <h1>CATCH POKEMON</h1>
+      <p>8-BIT ADVENTURE</p>
+      
+      <div class="loading-container">
+        <div class="loading-bar">
+          <div class="loading-progress" id="progress"></div>
+        </div>
+        <div class="loading-text" id="loading-text">INITIALIZING...</div>
+        <button id="start-button" class="loading">LOADING...</button>
       </div>
-      <div class="loading-text" id="loading-text">Initializing...</div>
-      <button id="start-button" class="loading">LOADING...</button>
     </div>
   </div>
 
@@ -168,7 +287,7 @@
 
     function initializeGame() {
       console.log('Initializing game...');
-      updateProgress(30, 'Loading assets...');
+      updateProgress(30, 'LOADING ASSETS...');
       
       setTimeout(() => {
         try {
@@ -183,7 +302,7 @@
             console.warn('ASSETS library not available, using fallbacks');
           }
           
-          updateProgress(70, 'Initializing UI...');
+          updateProgress(70, 'INITIALIZING UI...');
           
           // Check if UI is loaded
           if (!window.UI) {
@@ -191,7 +310,7 @@
           }
           console.log('UI module loaded');
           
-          updateProgress(90, 'Ready to play!');
+          updateProgress(100, 'READY!');
           
           gameReady = true;
           startButton.textContent = 'START GAME';
@@ -201,7 +320,7 @@
           console.log('Game initialization complete');
         } catch (e) {
           console.error('Initialization error:', e);
-          updateProgress(100, 'Error: ' + e.message);
+          updateProgress(100, 'ERROR: ' + e.message);
           startButton.textContent = 'RETRY';
           startButton.classList.remove('loading');
           startButton.disabled = false;
