@@ -1,22 +1,312 @@
-/* style.css - Simple layout and borders to make the game look cleaner */
-html,body{height:100%;}
-body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial; background:#071222;color:#e6f0f8;margin:0;padding:20px;-webkit-font-smoothing:antialiased}
-#game-wrap{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:1fr 280px;grid-gap:16px;align-items:start}
-header{grid-column:1/3;display:flex;flex-direction:row;justify-content:space-between;align-items:center;padding-bottom:8px}
-h1{margin:0;font-size:20px}
-#hud{display:flex;gap:12px;align-items:center;font-size:14px}
-#last-result{padding:6px 10px;background:rgba(255,255,255,0.03);border-radius:6px}
-#game-canvas{width:100%;height:480px;background:#0b2433;border:6px solid #e6e6e6;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,0.6);display:block}
-#inventory{background:linear-gradient(180deg,#0e1b24,#0b1418);border:2px solid #2b3a44;padding:12px;border-radius:10px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.02);color:#dceefb}
-#inventory h2{margin:0 0 8px 0;font-size:16px}
-#inventory-list{list-style:none;padding:0;margin:0;max-height:420px;overflow:auto}
-#inventory-list li{padding:8px;border:1px solid rgba(255,255,255,0.04);margin-bottom:8px;border-radius:8px;background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);cursor:pointer}
-button{background:#2b6fdd;color:#fff;border:0;padding:8px 10px;border-radius:8px;cursor:pointer}
-footer{grid-column:1/3;margin-top:12px;color:#9fb0c4}
+/* style.css - Mobile-friendly responsive design */
 
-/* responsive */
-@media (max-width:900px){
-  #game-wrap{grid-template-columns:1fr; padding:8px}
-  #inventory{order:2}
-  #game-canvas{height:360px}
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  background: #071222;
+  color: #e6f0f8;
+  margin: 0;
+  padding: 8px;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  overflow-x: hidden;
+}
+
+#game-wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  grid-gap: 12px;
+  align-items: start;
+}
+
+/* ===== HEADER ===== */
+header {
+  grid-column: 1 / 3;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 2px solid #2b3a44;
+}
+
+h1 {
+  margin: 0;
+  font-size: 24px;
+  text-align: center;
+}
+
+#hud {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+  font-size: 13px;
+  justify-content: space-between;
+}
+
+#score, #player-stats, #last-result {
+  padding: 6px 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 6px;
+  border: 1px solid rgba(43, 58, 68, 0.5);
+  flex: 1;
+  min-width: 120px;
+  text-align: center;
+}
+
+#last-result {
+  flex: 0 1 auto;
+  min-width: auto;
+}
+
+/* ===== CANVAS ===== */
+#game-canvas {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  max-height: 600px;
+  background: #0b2433;
+  border: 4px solid #e6e6e6;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  display: block;
+  touch-action: none;
+}
+
+/* ===== INVENTORY ===== */
+#inventory {
+  background: linear-gradient(180deg, #0e1b24, #0b1418);
+  border: 2px solid #2b3a44;
+  padding: 12px;
+  border-radius: 10px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
+  color: #dceefb;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+#inventory > div:first-child {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  gap: 8px;
+}
+
+#inventory h2 {
+  margin: 0;
+  font-size: 16px;
+  flex: 1;
+}
+
+#inventory-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 350px;
+  overflow-y: auto;
+}
+
+#inventory-list li {
+  padding: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  margin-bottom: 6px;
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent);
+  cursor: pointer;
+  font-size: 13px;
+  transition: background 0.2s ease;
+}
+
+#inventory-list li:active {
+  background: rgba(43, 111, 221, 0.3);
+}
+
+/* ===== BUTTONS ===== */
+button {
+  background: #2b6fdd;
+  color: #fff;
+  border: 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: background 0.2s ease;
+  flex: 1;
+  min-height: 40px;
+  touch-action: manipulation;
+}
+
+button:active {
+  background: #1e52b3;
+  transform: scale(0.98);
+}
+
+button:hover {
+  background: #1e52b3;
+}
+
+div[style*="gap:6px"] {
+  display: flex;
+  gap: 6px;
+}
+
+/* ===== FOOTER ===== */
+footer {
+  grid-column: 1 / 3;
+  margin-top: 8px;
+  color: #9fb0c4;
+  font-size: 12px;
+  text-align: center;
+  padding: 8px;
+  border-top: 1px solid #2b3a44;
+}
+
+#controls {
+  line-height: 1.5;
+}
+
+/* ===== TABLET (900px - 1200px) ===== */
+@media (max-width: 1024px) {
+  #game-wrap {
+    grid-template-columns: 1fr;
+    grid-gap: 10px;
+  }
+
+  header {
+    grid-column: 1;
+  }
+
+  #inventory {
+    grid-column: 1;
+    order: 2;
+    max-height: 250px;
+  }
+
+  #game-canvas {
+    grid-column: 1;
+    order: 1;
+    max-height: 400px;
+  }
+
+  footer {
+    grid-column: 1;
+    order: 3;
+  }
+}
+
+/* ===== MOBILE (max 640px) ===== */
+@media (max-width: 640px) {
+  body {
+    padding: 4px;
+  }
+
+  #game-wrap {
+    grid-gap: 6px;
+  }
+
+  h1 {
+    font-size: 18px;
+  }
+
+  #hud {
+    font-size: 11px;
+    gap: 6px;
+  }
+
+  #score, #player-stats {
+    flex: 1;
+    min-width: 80px;
+  }
+
+  #last-result {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  #game-canvas {
+    aspect-ratio: 4 / 3;
+    max-height: 360px;
+    border-width: 3px;
+  }
+
+  #inventory {
+    max-height: 200px;
+    padding: 10px;
+  }
+
+  #inventory h2 {
+    font-size: 14px;
+  }
+
+  #inventory-list {
+    max-height: 120px;
+  }
+
+  #inventory-list li {
+    padding: 6px;
+    margin-bottom: 4px;
+    font-size: 12px;
+  }
+
+  button {
+    padding: 10px 8px;
+    font-size: 11px;
+    min-height: 38px;
+  }
+
+  div[style*="gap:6px"] {
+    flex-direction: column;
+  }
+
+  footer {
+    font-size: 11px;
+    padding: 6px;
+  }
+
+  #controls {
+    line-height: 1.4;
+  }
+}
+
+/* ===== SMALL MOBILE (max 360px) ===== */
+@media (max-width: 360px) {
+  body {
+    padding: 2px;
+  }
+
+  h1 {
+    font-size: 16px;
+  }
+
+  #hud {
+    font-size: 10px;
+    gap: 4px;
+  }
+
+  #game-canvas {
+    max-height: 280px;
+  }
+
+  #inventory {
+    max-height: 160px;
+    padding: 8px;
+  }
+
+  button {
+    padding: 8px 6px;
+    font-size: 10px;
+    min-height: 36px;
+  }
 }
