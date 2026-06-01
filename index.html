@@ -12,6 +12,7 @@
       <h1>Let's Catch a Pokemon</h1>
       <div id="hud">
         <div id="score">Caught: <span id="caught-count">0</span></div>
+        <div id="player-stats">Level: <span id="player-level">1</span> XP: <span id="player-xp">0</span>/<span id="player-xp-next">100</span></div>
         <div id="last-result">Ready</div>
       </div>
     </header>
@@ -19,12 +20,20 @@
     <canvas id="game-canvas" width="640" height="480"></canvas>
 
     <aside id="inventory">
-      <h2>Inventory</h2>
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <h2>Inventory</h2>
+        <div style="font-size:11px">Limit: <span id="inventory-limit">30</span></div>
+      </div>
       <ul id="inventory-list"></ul>
+      <div style="margin-top:8px;display:flex;gap:6px;">
+        <button id="export-save">Export Save</button>
+        <button id="import-save">Import Save</button>
+        <button id="clear-save">Clear Save</button>
+      </div>
     </aside>
 
     <footer>
-      <div id="controls">Drag the Pokeball (bottom center) and release to throw. Touch supported.</div>
+      <div id="controls">Drag the Pokeball (bottom center) and release to throw. Touch supported. Click an inventory item to release it.</div>
     </footer>
   </div>
 
