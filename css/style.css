@@ -1,0 +1,22 @@
+/* style.css - Simple layout and borders to make the game look cleaner */
+html,body{height:100%;}
+body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial; background:#071222;color:#e6f0f8;margin:0;padding:20px;-webkit-font-smoothing:antialiased}
+#game-wrap{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:1fr 280px;grid-gap:16px;align-items:start}
+header{grid-column:1/3;display:flex;flex-direction:row;justify-content:space-between;align-items:center;padding-bottom:8px}
+h1{margin:0;font-size:20px}
+#hud{display:flex;gap:12px;align-items:center;font-size:14px}
+#last-result{padding:6px 10px;background:rgba(255,255,255,0.03);border-radius:6px}
+#game-canvas{width:100%;height:480px;background:#0b2433;border:6px solid #e6e6e6;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,0.6);display:block}
+#inventory{background:linear-gradient(180deg,#0e1b24,#0b1418);border:2px solid #2b3a44;padding:12px;border-radius:10px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.02);color:#dceefb}
+#inventory h2{margin:0 0 8px 0;font-size:16px}
+#inventory-list{list-style:none;padding:0;margin:0;max-height:420px;overflow:auto}
+#inventory-list li{padding:8px;border:1px solid rgba(255,255,255,0.04);margin-bottom:8px;border-radius:8px;background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);cursor:pointer}
+button{background:#2b6fdd;color:#fff;border:0;padding:8px 10px;border-radius:8px;cursor:pointer}
+footer{grid-column:1/3;margin-top:12px;color:#9fb0c4}
+
+/* responsive */
+@media (max-width:900px){
+  #game-wrap{grid-template-columns:1fr; padding:8px}
+  #inventory{order:2}
+  #game-canvas{height:360px}
+}
