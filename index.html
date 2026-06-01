@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Let's Catch a Pokemon</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="game-wrap">
+    <header>
+      <h1>Let's Catch a Pokemon</h1>
+      <div id="hud">
+        <div id="score">Caught: <span id="caught-count">0</span></div>
+        <div id="last-result">Ready</div>
+      </div>
+    </header>
+
+    <canvas id="game-canvas" width="640" height="480"></canvas>
+
+    <aside id="inventory">
+      <h2>Inventory</h2>
+      <ul id="inventory-list"></ul>
+    </aside>
+
+    <footer>
+      <div id="controls">Drag the Pokeball (bottom center) and release to throw. Touch supported.</div>
+    </footer>
+  </div>
+
+  <script src="js/pokemon-data.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>
