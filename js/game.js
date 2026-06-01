@@ -11,18 +11,43 @@
 
   // Initialize assets on first load
   function initAssets() {
-    if (!backgroundCanvas) {
-      backgroundCanvas = ASSETS.createForestBackground(W, H);
-    }
-    if (!pokeballSpriteCanvas) {
-      pokeballSpriteCanvas = ASSETS.createPokeballSprite(32);
+    try {
+      if (!backgroundCanvas) {
+        backgroundCanvas = ASSETS.createForestBackground(W, H);
+      }
+      if (!pokeballSpriteCanvas) {
+        pokeballSpriteCanvas = ASSETS.createPokeballSprite(32);
+      }
+    } catch (e) {
+      console.error('Asset initialization failed:', e);
+      // Create fallback background if ASSETS fails
+      if (!backgroundCanvas) {
+        backgroundCanvas = document.createElement('canvas');
+        backgroundCanvas.width = W;
+        backgroundCanvas.height = H;
+        const bgCtx = backgroundCanvas.getContext('2d');
+        bgCtx.fillStyle = '#2d5a2d';
+        bgCtx.fillRect(0, 0, W, H);
+      }
     }
   }
 
   // Get or create pokemon sprite
   function getPokemonSprite(rank) {
     if (!pokemonSpriteCache[rank]) {
-      pokemonSpriteCache[rank] = ASSETS.createPokemonSprite(rank, 40);
+      try {
+        pokemonSpriteCache[rank] = ASSETS.createPokemonSprite(rank, 40);
+      } catch (e) {
+        console.error('Pokemon sprite creation failed:', e);
+        // Fallback: create simple colored canvas
+        const fallbackCanvas = document.createElement('canvas');
+        fallbackCanvas.width = 40;
+        fallbackCanvas.height = 40;
+        const fc = fallbackCanvas.getContext('2d');
+        fc.fillStyle = '#FFD700';
+        fc.fillRect(5, 5, 30, 30);
+        pokemonSpriteCache[rank] = fallbackCanvas;
+      }
     }
     return pokemonSpriteCache[rank];
   }
@@ -61,10 +86,17 @@
 
   function drawPokemon(){ 
     if(!currentPokemon) return; 
-    const sprite = getPokemonSprite(currentPokemon.rank);
-    const x = Math.round(currentPokemon.x - currentPokemon.w/2); 
-    const y = Math.round(currentPokemon.y - currentPokemon.h/2);
-    ctx.drawImage(sprite, x, y, currentPokemon.w, currentPokemon.h);
+    try {
+      const sprite = getPokemonSprite(currentPokemon.rank);
+      const x = Math.round(currentPokemon.x - currentPokemon.w/2); 
+      const y = Math.round(currentPokemon.y - currentPokemon.h/2);
+      ctx.drawImage(sprite, x, y, currentPokemon.w, currentPokemon.h);
+    } catch (e) {
+      console.error('Draw pokemon failed:', e);
+      // Fallback: draw colored rectangle
+      ctx.fillStyle = RANK_COLOR[currentPokemon.rank] || '#fff';
+      ctx.fillRect(currentPokemon.x - 20, currentPokemon.y - 20, 40, 40);
+    }
     
     // Draw pokemon name below sprite
     ctx.fillStyle='#fff'; 
@@ -75,9 +107,36 @@
 
   function drawPokeball(){ 
     const p = pokeball;
-    const x = Math.round(p.x - 16);
-    const y = Math.round(p.y - 16);
-    ctx.drawImage(pokeballSpriteCanvas, x, y, 32, 32);
+    try {
+      const x = Math.round(p.x - 16);
+      const y = Math.round(p.y - 16);
+      ctx.drawImage(pokeballSpriteCanvas, x, y, 32, 32);
+    } catch (e) {
+      console.error('Draw pokeball failed:', e);
+      // Fallback: draw simple pokeball shape
+      ctx.fillStyle = '#FF3333';
+      ctx.beginPath();
+      ctx.arc(p.x, p.y - 8, 16, 0, Math.PI * 2);
+      ctx.fill();
+      
+      ctx.fillStyle = '#FFFFFF';
+      ctx.beginPath();
+      ctx.arc(p.x, p.y + 8, 16, 0, Math.PI * 2);
+      ctx.fill();
+      
+      ctx.fillStyle = '#000000';
+      ctx.fillRect(p.x - 16, p.y - 2, 32, 4);
+      
+      ctx.fillStyle = '#FFFFFF';
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 6, 0, Math.PI * 2);
+      ctx.fill();
+      
+      ctx.fillStyle = '#000000';
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+      ctx.fill();
+    }
     
     // Draw dragging indicator
     if(p.dragging) {
@@ -208,7 +267,19 @@
     last = now; 
     
     // Draw background
-    ctx.drawImage(backgroundCanvas, 0, 0);
+    try {
+      if (backgroundCanvas) {
+        ctx.drawImage(backgroundCanvas, 0, 0);
+      } else {
+        // Fallback background color
+        ctx.fillStyle = '#2d5a2d';
+        ctx.fillRect(0, 0, W, H);
+      }
+    } catch (e) {
+      console.error('Draw background failed:', e);
+      ctx.fillStyle = '#2d5a2d';
+      ctx.fillRect(0, 0, W, H);
+    }
     
     if(!currentPokemon) spawnPokemon(); 
     update(dt); 
