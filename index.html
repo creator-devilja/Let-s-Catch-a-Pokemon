@@ -5,9 +5,120 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Let's Catch a Pokemon</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    #splash-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #1a5c7a, #2d5a2d);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      gap: 20px;
+    }
+
+    #splash-screen.hidden {
+      display: none;
+    }
+
+    .splash-content {
+      text-align: center;
+      color: #e6f0f8;
+    }
+
+    .splash-content h1 {
+      font-size: 48px;
+      margin: 0 0 10px 0;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto;
+    }
+
+    .splash-content p {
+      font-size: 18px;
+      margin: 0 0 30px 0;
+      opacity: 0.9;
+    }
+
+    .loading-bar {
+      width: 200px;
+      height: 10px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 5px;
+      overflow: hidden;
+      border: 2px solid #e6f0f8;
+    }
+
+    .loading-progress {
+      height: 100%;
+      background: linear-gradient(90deg, #FFD700, #FF6600);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .loading-text {
+      font-size: 14px;
+      opacity: 0.8;
+      margin-top: 10px;
+    }
+
+    #start-button {
+      background: linear-gradient(135deg, #2b6fdd, #1e52b3);
+      color: #fff;
+      border: none;
+      padding: 15px 40px;
+      font-size: 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      transition: all 0.3s ease;
+      margin-top: 20px;
+    }
+
+    #start-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    }
+
+    #start-button:active {
+      transform: translateY(0);
+    }
+
+    #start-button.loading {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    .pokeball-icon {
+      font-size: 60px;
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+  </style>
 </head>
 <body>
-  <div id="game-wrap">
+  <div id="splash-screen">
+    <div class="splash-content">
+      <div class="pokeball-icon">🔴⚪</div>
+      <h1>Let's Catch a Pokemon</h1>
+      <p>Loading game assets...</p>
+      <div class="loading-bar">
+        <div class="loading-progress" id="progress"></div>
+      </div>
+      <div class="loading-text" id="loading-text">Initializing...</div>
+      <button id="start-button" class="loading">LOADING...</button>
+    </div>
+  </div>
+
+  <div id="game-wrap" style="display: none;">
     <header>
       <h1>Let's Catch a Pokemon</h1>
       <div id="hud">
@@ -40,6 +151,91 @@
   <script src="js/pokemon-data.js"></script>
   <script src="js/assets.js"></script>
   <script src="js/ui.js"></script>
-  <script src="js/game.js"></script>
+  
+  <script>
+    // Loading screen controller
+    let gameReady = false;
+    const splash = document.getElementById('splash-screen');
+    const gameWrap = document.getElementById('game-wrap');
+    const startButton = document.getElementById('start-button');
+    const progressBar = document.getElementById('progress');
+    const loadingText = document.getElementById('loading-text');
+
+    function updateProgress(percent, text) {
+      progressBar.style.width = percent + '%';
+      loadingText.textContent = text;
+    }
+
+    function initializeGame() {
+      console.log('Initializing game...');
+      updateProgress(30, 'Loading assets...');
+      
+      setTimeout(() => {
+        try {
+          // Check if required data is loaded
+          if (!window.POKEMON || window.POKEMON.length === 0) {
+            throw new Error('Pokemon data not loaded');
+          }
+          console.log('Pokemon data loaded:', window.POKEMON.length, 'pokemon');
+          
+          // Check if ASSETS exists
+          if (!window.ASSETS) {
+            console.warn('ASSETS library not available, using fallbacks');
+          }
+          
+          updateProgress(70, 'Initializing UI...');
+          
+          // Check if UI is loaded
+          if (!window.UI) {
+            throw new Error('UI module not loaded');
+          }
+          console.log('UI module loaded');
+          
+          updateProgress(90, 'Ready to play!');
+          
+          gameReady = true;
+          startButton.textContent = 'START GAME';
+          startButton.classList.remove('loading');
+          startButton.disabled = false;
+          
+          console.log('Game initialization complete');
+        } catch (e) {
+          console.error('Initialization error:', e);
+          updateProgress(100, 'Error: ' + e.message);
+          startButton.textContent = 'RETRY';
+          startButton.classList.remove('loading');
+          startButton.disabled = false;
+        }
+      }, 1000);
+    }
+
+    function startGame() {
+      if (!gameReady) return;
+      
+      console.log('Starting game...');
+      splash.classList.add('hidden');
+      gameWrap.style.display = 'grid';
+      
+      // Initialize game loop
+      setTimeout(() => {
+        // Dynamically load game.js
+        const script = document.createElement('script');
+        script.src = 'js/game.js';
+        script.onload = () => console.log('Game script loaded');
+        script.onerror = () => console.error('Failed to load game script');
+        document.body.appendChild(script);
+      }, 100);
+    }
+
+    startButton.addEventListener('click', startGame);
+
+    // Start initialization when page loads
+    window.addEventListener('load', initializeGame);
+    
+    // Also try to initialize immediately in case window.load fires too late
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+      initializeGame();
+    }
+  </script>
 </body>
 </html>
